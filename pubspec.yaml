@@ -1,0 +1,68 @@
+name: profissional
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+#19/08/2024
+version: 1.0.4+5
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.5
+  firebase_core: ^3.2.0
+  firebase_core_platform_interface: ^5.1.0
+  firebase_auth: ^5.1.2
+  firebase_auth_platform_interface: ^7.4.2
+  google_fonts: ^6.2.1
+  font_awesome_flutter: ^10.2.1
+  cloud_firestore: ^5.1.0
+  url_launcher: ^6.1.6
+  url_launcher_android: ^6.0.24
+  email_validator: ^3.0.0
+  flutter_launcher_icons: ^0.14.1
+  icons_launcher: ^3.0.0
+  fluttertoast: ^8.2.4
+  easy_search_bar: ^2.5.0
+  dropdown_search: ^6.0.1
+  flutter_typeahead: ^4.8.0
+  firebase_analytics: ^11.2.0
+  image_picker: ^1.1.2
+  firebase_storage: ^12.1.1
+  shared_preferences: ^2.2.3
+  intl: ^0.19.0
+  geolocator: ^13.0.1
+  uuid: ^4.5.1
+  
+
+icons_launcher:
+  image_path: "assets/logo.png"
+  platforms:
+    android:
+      enable: true
+      background_color: "#FFFFF" # Azul
+      adaptive_icon_background: "#FFFFFF" # Azul para ícones adaptativos
+      adaptive_icon_foreground: "assets/logo.png"
+    ios:
+      enable: true
+      background_color: "#FFFFFF" # Azul
+    
+
+# dart run icons_launcher:create
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/logo.png
+    - assets/financeiro.jpg

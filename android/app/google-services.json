@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "921834200020",
+    "project_id": "teste-staircase",
+    "storage_bucket": "teste-staircase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921834200020:android:c7d148970417178a2e1441",
+        "android_client_info": {
+          "package_name": "com.edy.edycliente"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXzJb_t6lce8XGiAbm8i5hwULrM-XE22w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921834200020:android:9cc9d7fb683540482e1441",
+        "android_client_info": {
+          "package_name": "com.pro.profissional"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXzJb_t6lce8XGiAbm8i5hwULrM-XE22w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
