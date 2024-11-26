@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:profissional/Dashboard/Model/ganhos_modelo.dart';
+import 'package:profissional/Dashboard/Model/ganhosModelo.dart';
 
 class GanhosServico {
   String userId;
@@ -37,7 +37,8 @@ class GanhosServico {
         .snapshots();
   }
 
-  Future<void> removerGanhos({required String? idGanho, String? IdGanho}) {
+
+  Future<void> removerGanhos({required String? idGanho}) {
     return _firestore
         .collection("Profissional")
         .doc(userId)

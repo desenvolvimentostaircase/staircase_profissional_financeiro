@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:profissional/Cores/cores.dart';
-import 'package:profissional/Dashboard/Model/ganhos_modelo.dart';
-import 'package:profissional/Dashboard/Servicos/ganhos_servico.dart';
+import 'package:profissional/Dashboard/Model/ganhosModelo.dart';
+import 'package:profissional/Dashboard/Servicos/ganhosServico.dart';
 import 'package:uuid/uuid.dart';
 
-showModal(BuildContext context, {GanhosModelo? ganho}) {
+showModalGanhos(BuildContext context, {GanhosModelo? ganho}) {
   showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -23,6 +24,7 @@ class ShowModal extends StatefulWidget {
 }
 
 class _ShowModalState extends State<ShowModal> {
+  final _formKey = GlobalKey<FormState>();
   GanhosServico _ganhosServico = GanhosServico();
   DateTime? dataSelecionadaGlobal;
 
@@ -55,11 +57,12 @@ class _ShowModalState extends State<ShowModal> {
     super.initState();
 
     if (widget.ganhosModelo != null) {
+      dataSelecionadaGlobal = widget.ganhosModelo?.data;
       _tituloController.text = widget.ganhosModelo!.titulo;
       _descricaoController.text = widget.ganhosModelo!.descricao;
       _dataController.text =
           "${widget.ganhosModelo!.data.day}/${widget.ganhosModelo!.data.month}/${widget.ganhosModelo!.data.year}";
-      _valorController.text = widget.ganhosModelo!.valor;
+      _valorController.text = widget.ganhosModelo!.valor.toString();
       _nomeClienteController.text = widget.ganhosModelo!.nomeCliente;
       _whatsappController.text = widget.ganhosModelo!.whatsapp;
     }
@@ -99,6 +102,7 @@ class _ShowModalState extends State<ShowModal> {
         ),
         actions: [
           Form(
+            key: _formKey,
             child: Column(
               children: [
                 TextFormField(
@@ -114,6 +118,11 @@ class _ShowModalState extends State<ShowModal> {
                     filled: true,
                     fillColor: cinza,
                   ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Insira um título";
+                    }
+                  },
                 ),
                 SizedBox(
                   height: 10,
@@ -152,12 +161,18 @@ class _ShowModalState extends State<ShowModal> {
                     fillColor: cinza,
                   ),
                   onTap: () => _selecionarData(context),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Insira uma data";
+                    }
+                  },
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 TextFormField(
                   controller: _valorController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 15, horizontal: 20),
@@ -169,6 +184,29 @@ class _ShowModalState extends State<ShowModal> {
                     filled: true,
                     fillColor: cinza,
                   ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Insira um valor";
+                    }
+
+                    //Verfifica se o valor é um double
+                    final doubleValue = double.tryParse(value);
+                    if (doubleValue == null) {
+                      return "Digite um número válido";
+                    }
+
+                    // Verifica se o valor possui mais de duas casas decimais
+                    if (!RegExp(r'^\d+(\.\d{1,2})?$').hasMatch(value)) {
+                      return "Digite um número com no máximo 2 casas decimais separado por '.' ";
+                    }
+
+                    return null; //campo válido
+                  },
+                  inputFormatters: [
+                    //Permite apenas números e ponto decimal
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+\.?\d{0,2}')),
+                  ],
                 ),
                 SizedBox(
                   height: 20,
@@ -199,12 +237,19 @@ class _ShowModalState extends State<ShowModal> {
                     filled: true,
                     fillColor: cinza,
                   ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Insira o nome do cliente";
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 TextFormField(
                   controller: _whatsappController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 15, horizontal: 20),
@@ -216,6 +261,19 @@ class _ShowModalState extends State<ShowModal> {
                     filled: true,
                     fillColor: cinza,
                   ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter
+                        .digitsOnly, //Permite somente números
+                  ],
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Insira um número de celular";
+                    } else if (value.length != 11) {
+                      // 11 digitos com DDD
+                      return "Número inválido";
+                    }
+                    return null;
+                  },
                 ),
               ],
             ),
@@ -230,6 +288,7 @@ class _ShowModalState extends State<ShowModal> {
                 child: ElevatedButton(
                   onPressed: () {
                     enviarDados();
+                    Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.all(10),
@@ -289,22 +348,24 @@ class _ShowModalState extends State<ShowModal> {
     String nomeCliente = _nomeClienteController.text;
     String whatsapp = _whatsappController.text;
 
-    GanhosModelo ganhosModelo = GanhosModelo(
-      id: Uuid().v1(),
-      titulo: titulo,
-      descricao: descricao,
-      data: data!,
-      valor: valor,
-      nomeCliente: nomeCliente,
-      whatsapp: whatsapp,
-    );
+    if (_formKey.currentState!.validate()) {
+      GanhosModelo ganhosModelo = GanhosModelo(
+        id: Uuid().v1(),
+        titulo: titulo,
+        descricao: descricao,
+        data: data!,
+        valor: double.parse(valor),
+        nomeCliente: nomeCliente,
+        whatsapp: whatsapp,
+      );
 
-    if (widget.ganhosModelo != null) {
-      ganhosModelo.id = widget.ganhosModelo!.id;
+      if (widget.ganhosModelo != null) {
+        ganhosModelo.id = widget.ganhosModelo!.id;
+      }
+
+      await _ganhosServico.adicionarGanhos(ganhosModelo);
+
+      
     }
-
-    await _ganhosServico.adicionarGanhos(ganhosModelo);
-
-    Navigator.of(context).pop();
   }
 }

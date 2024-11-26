@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:profissional/Cores/cores.dart';
-import 'package:profissional/Dashboard/Servicos/ganhos_servico.dart';
+import 'package:profissional/Dashboard/Servicos/ganhosServico.dart';
 
 showModalDeletar(BuildContext context, {required String idGanho}) {
   showDialog(
@@ -59,6 +59,7 @@ class _ShowModalDeletarState extends State<ShowModalDeletar> {
               child: ElevatedButton(
                 onPressed: () {
                   _ganhosServico.removerGanhos(idGanho: widget.idGanho);
+                  Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(10),

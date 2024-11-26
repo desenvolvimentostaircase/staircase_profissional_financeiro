@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:profissional/Dashboard/Componentes/modal.dart';
+import 'package:profissional/Dashboard/Componentes/modalGanhos.dart';
 import 'package:profissional/Cores/cores.dart';
 import 'package:profissional/Dashboard/Componentes/modalFiltro.dart';
-import 'package:profissional/Dashboard/Componentes/modal_deletar.dart';
-import 'package:profissional/Dashboard/Model/ganhos_modelo.dart';
-import 'package:profissional/Dashboard/Servicos/ganhos_servico.dart';
+import 'package:profissional/Dashboard/Componentes/modalDeletar.dart';
+import 'package:profissional/Dashboard/Model/ganhosModelo.dart';
+import 'package:profissional/Dashboard/Servicos/ganhosServico.dart';
+import 'package:intl/intl.dart';
 
 class HomeGanhos extends StatefulWidget {
   const HomeGanhos({super.key});
@@ -21,12 +22,15 @@ class _HomeGanhosState extends State<HomeGanhos> {
 
   DateTime? dataInicio;
   DateTime? dataFim;
+  String? dataPeriodo;
+  double? totalGastosGlobal;
 
   late Stream<QuerySnapshot<Map<String, dynamic>>> streamAtual;
   @override
   void initState() {
     super.initState();
     streamAtual = _ganhosServico.conectarStreamGanhos();
+    dataPeriodo = "Todo período";
   }
 
   void atualizarFiltro(DateTime start, DateTime end) {
@@ -37,6 +41,8 @@ class _HomeGanhosState extends State<HomeGanhos> {
 
     streamAtual =
         _ganhosServico.conectarStreamGanhosFiltrados(dataInicio!, dataFim!);
+    dataPeriodo =
+        "${dataInicio!.day}/${dataInicio!.month} a ${dataFim!.day}/${dataFim!.month}";
   }
 
   @override
@@ -44,7 +50,7 @@ class _HomeGanhosState extends State<HomeGanhos> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          showModal(
+          showModalGanhos(
             context,
           );
         },
@@ -111,7 +117,7 @@ class _HomeGanhosState extends State<HomeGanhos> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Período: 01/10 a 31/10"),
+                  Text("Período: $dataPeriodo"),
                   SizedBox(
                     width: 10,
                   ),
@@ -131,7 +137,10 @@ class _HomeGanhosState extends State<HomeGanhos> {
                           ),
                         ),
                         SizedBox(width: 5),
-                        Text("5000,00"),
+                        Text(
+                          NumberFormat("#,##0.00", "pt_BR")
+                              .format(totalGastosGlobal ?? 0.0),
+                        ),
                       ],
                     ),
                   ),
@@ -176,6 +185,16 @@ class _HomeGanhosState extends State<HomeGanhos> {
                         listaGanhos.add(GanhosModelo.fromMap(doc.data()));
                       }
 
+                      double totalGastos = listaGanhos.fold(0, (soma, ganho) {
+                        return soma! + (ganho.valor ?? 0);
+                      });
+
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        setState(() {
+                          totalGastosGlobal = totalGastos;
+                        });
+                      });
+
                       return ListView(
                         children: List.generate(listaGanhos.length, (index) {
                           GanhosModelo ganhosModelo = listaGanhos[index];
@@ -210,7 +229,7 @@ class _HomeGanhosState extends State<HomeGanhos> {
                                           radius: 20,
                                           child: IconButton(
                                             onPressed: () {
-                                              showModal(context,
+                                              showModalGanhos(context,
                                                   ganho: ganhosModelo);
                                             },
                                             icon: Icon(Icons.edit),
@@ -285,7 +304,11 @@ class _HomeGanhosState extends State<HomeGanhos> {
                                                 ),
                                               ),
                                               SizedBox(width: 5),
-                                              Text(ganhosModelo.valor),
+                                              Text(
+                                                NumberFormat(
+                                                        "#,##0.00", "pt_BR")
+                                                    .format(ganhosModelo.valor),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -300,7 +323,7 @@ class _HomeGanhosState extends State<HomeGanhos> {
                       );
                     } else {
                       return Center(
-                        child: Text("Nehnum registro foi e encontrado"),
+                        child: Text("Nenhum registro foi encontrado"),
                       );
                     }
                   }
