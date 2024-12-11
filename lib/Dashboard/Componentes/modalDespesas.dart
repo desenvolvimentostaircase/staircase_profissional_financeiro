@@ -32,7 +32,7 @@ class _ShowModalState extends State<ShowModal> {
   final TextEditingController _descricaoController = TextEditingController();
   final TextEditingController _dataController = TextEditingController();
   final TextEditingController _valorController = TextEditingController();
-  
+
   Future<void> _selecionarData(BuildContext context) async {
     DateTime? dataSelecionada = await showDatePicker(
       context: context,
@@ -220,7 +220,6 @@ class _ShowModalState extends State<ShowModal> {
                 child: ElevatedButton(
                   onPressed: () {
                     enviarDados();
-                    Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.all(10),
@@ -277,7 +276,7 @@ class _ShowModalState extends State<ShowModal> {
     String descricao = _descricaoController.text;
     DateTime? data = dataSelecionadaGlobal;
     String valor = _valorController.text;
-    
+
     if (_formKey.currentState!.validate()) {
       DespesasModelo despesasModelo = DespesasModelo(
         id: Uuid().v1(),
@@ -292,6 +291,7 @@ class _ShowModalState extends State<ShowModal> {
       }
 
       await _despesasServico.adicionarDespesas(despesasModelo);
+      Navigator.of(context).pop();
     }
   }
 }

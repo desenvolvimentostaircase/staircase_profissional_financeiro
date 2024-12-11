@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:profissional/Cores/cores.dart';
+import 'package:profissional/Dashboard/Servicos/gerarExcel.dart';
 
 class HomeResultado extends StatefulWidget {
   const HomeResultado({super.key});
@@ -17,7 +18,51 @@ class _HomeResultadoState extends State<HomeResultado> {
         padding: EdgeInsets.only(right: 25, left: 25),
         child: Column(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
+                        color: cinza,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        padding: EdgeInsets.zero,
+                        iconSize: 20,
+                        icon: Icon(Icons.arrow_back),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Total",
+                      style: GoogleFonts.roboto(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                      ),
+                    ),
+                  ],
+                ),
+                FilledButton.icon(
+                  onPressed: () {},
+                  style: FilledButton.styleFrom(
+                    backgroundColor: azul,
+                  ),
+                  icon: Icon(Icons.filter_list),
+                  label: Text("Filtro"),
+                ),
+              ],
+            ),
             Container(
+              margin: EdgeInsets.only(top: 10),
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: cinza,
@@ -107,7 +152,9 @@ class _HomeResultadoState extends State<HomeResultado> {
                         width: 10,
                       ),
                       FilledButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          gerarArquivoExcel();
+                        },
                         style: FilledButton.styleFrom(
                           backgroundColor: azul,
                         ),

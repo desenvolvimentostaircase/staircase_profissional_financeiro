@@ -288,7 +288,6 @@ class _ShowModalState extends State<ShowModal> {
                 child: ElevatedButton(
                   onPressed: () {
                     enviarDados();
-                    Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.all(10),
@@ -364,8 +363,7 @@ class _ShowModalState extends State<ShowModal> {
       }
 
       await _ganhosServico.adicionarGanhos(ganhosModelo);
-
-      
+      Navigator.of(context).pop();
     }
   }
 }
