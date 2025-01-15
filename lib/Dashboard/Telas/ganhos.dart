@@ -23,7 +23,7 @@ class _HomeGanhosState extends State<HomeGanhos> {
   DateTime? dataInicio;
   DateTime? dataFim;
   String? dataPeriodo;
-  double? totalGastosGlobal;
+  double? totalGanhosGlobal;
 
   late Stream<QuerySnapshot<Map<String, dynamic>>> streamAtual;
   @override
@@ -139,7 +139,7 @@ class _HomeGanhosState extends State<HomeGanhos> {
                         SizedBox(width: 5),
                         Text(
                           NumberFormat("#,##0.00", "pt_BR")
-                              .format(totalGastosGlobal ?? 0.0),
+                              .format(totalGanhosGlobal ?? 0.0),
                         ),
                       ],
                     ),
@@ -191,7 +191,7 @@ class _HomeGanhosState extends State<HomeGanhos> {
 
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         setState(() {
-                          totalGastosGlobal = totalGastos;
+                          totalGanhosGlobal = totalGastos;
                         });
                       });
 
@@ -246,7 +246,7 @@ class _HomeGanhosState extends State<HomeGanhos> {
                                           child: IconButton(
                                             onPressed: () {
                                               showModalDeletar(context,
-                                                  idGanho: ganhosModelo.id);
+                                                  idGanho: ganhosModelo.id, tipo: 'ganho');
                                             },
                                             icon: Icon(Icons.delete),
                                             iconSize: 20,

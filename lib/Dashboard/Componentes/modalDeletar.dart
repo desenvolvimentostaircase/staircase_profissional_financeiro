@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:profissional/Cores/cores.dart';
+import 'package:profissional/Dashboard/Servicos/despesasServico.dart';
 import 'package:profissional/Dashboard/Servicos/ganhosServico.dart';
 
-showModalDeletar(BuildContext context, {required String idGanho}) {
+showModalDeletar(
+  BuildContext context, {
+  required String tipo,
+  String? idDespesa,
+  String? idGanho,
+}) {
   showDialog(
       context: context,
       builder: (BuildContext context) {
         return ShowModalDeletar(
           idGanho: idGanho,
+          idDespesa: idDespesa,
+          tipo: tipo,
         );
       });
 }
 
 class ShowModalDeletar extends StatefulWidget {
   final String? idGanho;
-  const ShowModalDeletar({super.key, this.idGanho});
+  final String? idDespesa;
+  final String? tipo;
+  const ShowModalDeletar({super.key, this.idGanho, this.tipo, this.idDespesa});
 
   @override
   State<ShowModalDeletar> createState() => _ShowModalDeletarState();
@@ -22,6 +32,7 @@ class ShowModalDeletar extends StatefulWidget {
 
 class _ShowModalDeletarState extends State<ShowModalDeletar> {
   final GanhosServico _ganhosServico = GanhosServico();
+  final DespesasServico _despesasServico = DespesasServico();
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +69,14 @@ class _ShowModalDeletarState extends State<ShowModalDeletar> {
               flex: 1,
               child: ElevatedButton(
                 onPressed: () {
-                  _ganhosServico.removerGanhos(idGanho: widget.idGanho);
-                  Navigator.of(context).pop();
+                  if (widget.tipo == 'ganho') {
+                    _ganhosServico.removerGanhos(idGanho: widget.idGanho);
+                    Navigator.of(context).pop();
+                  } else if (widget.tipo == 'despesa') {
+                    _despesasServico.removerDespesas(
+                        idDespesa: widget.idDespesa);
+                    Navigator.of(context).pop();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(10),

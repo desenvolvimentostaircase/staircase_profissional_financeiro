@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:profissional/Dashboard/Componentes/modalDeletar.dart';
 import 'package:profissional/Dashboard/Componentes/modalDespesas.dart';
 import 'package:profissional/Dashboard/Componentes/modalFiltro.dart';
 import 'package:profissional/Cores/cores.dart';
@@ -139,7 +140,10 @@ class _HomeDespesasState extends State<HomeDespesas> {
                         SizedBox(
                           width: 5,
                         ),
-                        Text("1000,00")
+                        Text(
+                          NumberFormat("#,##0.00", "pt_BR")
+                              .format(totalDespesasGlobal ?? 0.0),
+                        )
                       ],
                     ),
                   ),
@@ -227,7 +231,10 @@ class _HomeDespesasState extends State<HomeDespesas> {
                                             backgroundColor: azul,
                                             radius: 20,
                                             child: IconButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                showModalDespesas(context,
+                                                    despesa: despesasModelo);
+                                              },
                                               icon: Icon(Icons.edit),
                                               iconSize: 20,
                                               color: branco,
@@ -240,7 +247,12 @@ class _HomeDespesasState extends State<HomeDespesas> {
                                             backgroundColor: vermelho,
                                             radius: 20,
                                             child: IconButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                showModalDeletar(context,
+                                                    idDespesa:
+                                                        despesasModelo.id,
+                                                    tipo: 'despesa');
+                                              },
                                               icon: Icon(Icons.delete),
                                               iconSize: 20,
                                               color: branco,
@@ -269,6 +281,8 @@ class _HomeDespesasState extends State<HomeDespesas> {
                                               BorderRadius.circular(20),
                                         ),
                                         child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "\$",

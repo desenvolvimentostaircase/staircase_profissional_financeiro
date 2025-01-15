@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:profissional/Dashboard/Servicos/ganhosServico.dart';
 import 'dart:io';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> gerarArquivoExcel() async {
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
   //Cria um novo arquivo Excel
   var excel = Excel.createExcel();
 
@@ -18,6 +23,27 @@ Future<void> gerarArquivoExcel() async {
   sheet.cell(CellIndex.indexByString("E1")).value =
       TextCellValue("Nome Cliente");
   sheet.cell(CellIndex.indexByString("F1")).value = TextCellValue("Whatsapp");
+
+  //Buscar os dados no Firestore
+  QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+      .instance
+      .collection("Profissional")
+      .doc(userId)
+      .collection("Ganhos")
+      .get();
+
+//Preenche os dados na planilha
+  for (var doc in snapshot.docs) {
+    var dados = doc.data();
+    sheet.appendRow([
+      dados['titulo'] ?? '',
+      dados['descricao'] ?? '',
+      dados['data'] ?? '',
+      dados['valor'] ?? '',
+      dados['nomeCliente'] ?? '',
+      dados['whatsapp'] ?? '' ,      
+    ]);
+  }
 
   //Define o caminho para a pasta temporária do aplicativo
   Directory tempDir = await getTemporaryDirectory();

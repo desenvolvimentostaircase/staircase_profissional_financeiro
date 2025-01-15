@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:profissional/Cores/cores.dart';
+import 'package:profissional/Dashboard/Componentes/modalFiltro.dart';
 import 'package:profissional/Dashboard/Servicos/gerarExcel.dart';
 
 class HomeResultado extends StatefulWidget {
@@ -11,6 +12,20 @@ class HomeResultado extends StatefulWidget {
 }
 
 class _HomeResultadoState extends State<HomeResultado> {
+  DateTime? dataInicio;
+  DateTime? dataFim;
+  String? dataPeriodo = "Todo período";
+
+  void atualizarFiltro(DateTime start, DateTime end) {
+    setState(() {
+      dataInicio = start;
+      dataFim = end;
+    });
+
+    dataPeriodo =
+        "${dataInicio!.day}/${dataInicio!.month} a ${dataFim!.day}/${dataFim!.month}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +67,9 @@ class _HomeResultadoState extends State<HomeResultado> {
                   ],
                 ),
                 FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalFiltro(context, atualizarFiltro);
+                  },
                   style: FilledButton.styleFrom(
                     backgroundColor: azul,
                   ),
@@ -71,7 +88,7 @@ class _HomeResultadoState extends State<HomeResultado> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Período: 01/10 a 31/10"),
+                  Text("Período: $dataPeriodo"),
                   SizedBox(
                     width: 10,
                   ),
