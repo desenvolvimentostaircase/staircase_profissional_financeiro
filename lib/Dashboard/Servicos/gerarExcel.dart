@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:profissional/Dashboard/Servicos/ganhosServico.dart';
 import 'dart:io';
 import 'package:share_plus/share_plus.dart';
@@ -13,7 +14,7 @@ Future<void> gerarArquivoExcel() async {
   var excel = Excel.createExcel();
 
   //Acessa a primeira aba da planilha
-  Sheet sheet = excel['Sheet1'];
+  Sheet sheet = excel['Ganhos'];
 
   //Define o cabeçalho
   sheet.cell(CellIndex.indexByString("A1")).value = TextCellValue("Titulo");
@@ -32,17 +33,51 @@ Future<void> gerarArquivoExcel() async {
       .collection("Ganhos")
       .get();
 
-//Preenche os dados na planilha
-  for (var doc in snapshot.docs) {
-    var dados = doc.data();
-    sheet.appendRow([
-      dados['titulo'] ?? '',
-      dados['descricao'] ?? '',
-      dados['data'] ?? '',
-      dados['valor'] ?? '',
-      dados['nomeCliente'] ?? '',
-      dados['whatsapp'] ?? '' ,      
-    ]);
+  //Verifica se há dados
+  if (snapshot.docs.isEmpty) {
+    print("Nenhum dado encontrado");
+    return;
+  }
+
+  //Converter os dados para uma lista local
+  List<Map<String, dynamic>> dadosBusca =
+      snapshot.docs.map((doc) => doc.data()).toList();
+
+  //Preenche os dados na planilha
+  for (int i = 0; i < dadosBusca.length; i++) {
+    var dados = dadosBusca[i];
+
+    String titulo = dados['titulo'];
+    String descricao = dados['descricao'];
+    String dataFormatada = DateFormat('dd/MM/yyyy', 'pt_BR')
+          .format((dados['data'] as Timestamp).toDate());
+    String valor = dados['valor'].toStringAsFixed(2);
+    String nomeCliente = dados['nomeCliente'];
+    String whatsapp = dados['whatsapp'];
+
+    sheet
+        .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i + 1))
+        .value = TextCellValue(titulo);
+
+    sheet
+        .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: i + 1))
+        .value = TextCellValue(descricao);
+
+    sheet
+        .cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: i + 1))
+        .value = TextCellValue(dataFormatada);
+
+    sheet
+        .cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: i + 1))
+        .value = TextCellValue(valor);
+    
+    sheet
+        .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: i + 1))
+        .value = TextCellValue(nomeCliente);
+
+    sheet
+        .cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: i + 1))
+        .value = TextCellValue(whatsapp);
   }
 
   //Define o caminho para a pasta temporária do aplicativo
