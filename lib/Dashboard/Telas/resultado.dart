@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:profissional/Cores/cores.dart';
 import 'package:profissional/Dashboard/Componentes/modalFiltro.dart';
 import 'package:profissional/Dashboard/Servicos/gerarExcel.dart';
+import 'package:profissional/Dashboard/Servicos/gerarPDF.dart';
 
 class HomeResultado extends StatefulWidget {
   const HomeResultado({super.key});
@@ -158,7 +159,9 @@ class _HomeResultadoState extends State<HomeResultado> {
                   Row(
                     children: [
                       FilledButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          gerarPDF();
+                        },
                         style: FilledButton.styleFrom(
                           backgroundColor: azul,
                         ),
